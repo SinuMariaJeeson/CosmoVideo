@@ -3,60 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Loop</title>
+    <title>Fullscreen Video Loop - Sinu Maria Jeeson</title>
     <style>
-        body, html {
-            height: 100%;
+        html, body {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: black;
             display: flex;
-            justify-content: center;
             align-items: center;
-            background-color: black;
-        }
-        #videoContainer {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            display: none;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+            justify-content: center;
         }
         #startButton {
-            font-size: 24px;
-            padding: 10px 20px;
+            padding: 1em 2em;
+            font-size: 1.5em;
+            background-color: #444;
+            color: white;
+            border: none;
             cursor: pointer;
+            border-radius: 5px;
+        }
+        #startButton:hover {
+            background-color: #666;
+        }
+        video {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        video.fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
 <body>
-    <button id="startButton">Play Video</button>
-    <div id="videoContainer">
-        <iframe id="youtubeVideo" 
-                src="https://youtube.com/embed/J7wY37S43vs?autoplay=1&loop=1&playlist=J7wY37S43vs&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" 
-                allow="autoplay; fullscreen">
-        </iframe>
-    </div>
-
+    <button id="startButton">Start Video</button>
+    <video id="video" src="90cosmo.mov" loop></video>
     <script>
-        document.getElementById('startButton').addEventListener('click', function() {
-            const videoContainer = document.getElementById('videoContainer');
-            const youtubeVideo = document.getElementById('youtubeVideo');
-            
-            videoContainer.style.display = 'block';
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.mozRequestFullScreen) { // Firefox
-                videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
-                videoContainer.msRequestFullscreen();
-            }
+        document.getElementById('startButton').addEventListener('click', () => {
+            const videoElement = document.getElementById('video');
+            videoElement.style.display = 'block';
+            videoElement.play().then(() => {
+                if (videoElement.requestFullscreen) {
+                    videoElement.requestFullscreen().then(() => {
+                        videoElement.classList.add('fullscreen');
+                    }).catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                } else if (videoElement.mozRequestFullScreen) { /* Firefox */
+                    videoElement.mozRequestFullScreen().then(() => {
+                        videoElement.classList.add('fullscreen');
+                    }).catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                } else if (videoElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                    videoElement.webkitRequestFullscreen().then(() => {
+                        videoElement.classList.add('fullscreen');
+                    }).catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                } else if (videoElement.msRequestFullscreen) { /* IE/Edge */
+                    videoElement.msRequestFullscreen().then(() => {
+                        videoElement.classList.add('fullscreen');
+                    }).catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                }
+            }).catch(err => {
+                console.log(`Error attempting to play the video: ${err.message} (${err.name})`);
+            });
+        });
 
-            this.style.display = 'none';
+        document.addEventListener('fullscreenchange', () => {
+            const videoElement = document.getElementById('video');
+            if (!document.fullscreenElement) {
+                videoElement.classList.remove('fullscreen');
+            }
         });
     </script>
 </body>
